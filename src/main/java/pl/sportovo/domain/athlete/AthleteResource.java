@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pl.sportovo.domain.activity.Activity;
+import pl.sportovo.domain.activity.model.Activity;
 
 import java.net.URI;
 import java.util.List;
@@ -15,16 +15,25 @@ import java.util.List;
 @Consumes({MediaType.APPLICATION_JSON})
 public class AthleteResource {
 
+
     @GET
-    public List<Activity> list(){
+    public List<Activity> list() {
         return Athlete.listAll();
     }
 
     @GET
     @Path("{id}")
-    public Activity get(@PathParam("id") Long id){
+    public Athlete get(@PathParam("id") Long id) {
         return Athlete.findById(id);
     }
+
+//    @GET
+//    public Response getByUsername(@QueryParam("{username}") String username) {
+//        if (!Athlete.usernameExists(username)) {
+//            return Response.status(404).build();
+//        }
+//        return Response.ok().entity(Athlete.findByUsername(username)).build();
+//    }
 
     @Transactional
     @POST

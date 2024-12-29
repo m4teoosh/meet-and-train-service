@@ -5,13 +5,13 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pl.sportovo.domain.activity.Activity;
+import pl.sportovo.domain.activity.model.Activity;
 
 
 import java.net.URI;
 import java.util.List;
 
-@Path("/Locations")
+@Path("/locations")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public class LocationResource {

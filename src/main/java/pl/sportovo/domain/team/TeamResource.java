@@ -22,12 +22,12 @@ public class TeamResource {
 
     @GET
     @Path("{id}")
-    public Team get(@PathParam("id") UUID id) {
+    public Response get(@PathParam("id") UUID id) {
         Team team = Team.findById(id);
         if (team == null) {
-            throw new WebApplicationException("Team not found", Response.Status.NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return team;
+        return Response.ok().entity(team).build();
     }
 
     @Transactional

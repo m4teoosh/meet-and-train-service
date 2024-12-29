@@ -7,7 +7,8 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.*;
-import pl.sportovo.domain.activity.Activity;
+import pl.sportovo.domain.activity.model.Activity;
+import pl.sportovo.domain.activity.model.CreateActivity;
 import pl.sportovo.domain.athlete.Athlete;
 import pl.sportovo.domain.discipline.Discipline;
 import pl.sportovo.domain.location.Location;
@@ -22,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 public class ResourceTest {
 
 
+
     @BeforeAll
     public static void setup() {
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
@@ -30,10 +32,10 @@ public class ResourceTest {
     @Test
     public void testPostLocation() {
         Location l1 = new Location();
+        l1.setName("Warsaw Boxing Center");
         l1.setLatitude(52.2297700);
         l1.setLongitude(21.01178);
-
-
+        post("/locations", l1, 201);
     }
 
     @Test
@@ -46,19 +48,43 @@ public class ResourceTest {
 
         post("/athletes", a1, 400)
         .body(containsString("Athlete with this username already exists!"));
-
     }
 
     @Test
-    public void testPostActivities() {
-        Activity a = new Activity();
-        a.setDiscipline(Discipline.BOXING);
-        a.setCapacity(33);
-        a.setOwner(null);
-        a.setLocation(null);
+    public void testPostActivities400() {
+        CreateActivity createActivity = new CreateActivity();
+        createActivity.setDiscipline(Discipline.BOXING);
+        createActivity.setCapacity(33);
 
-        post("/activities", a, 400)
-        .body("errors.size()", is(3));
+
+        post("/activities", createActivity, 400)
+        .body("errors.size()", is(4));
+    }
+
+    @Test
+    public void testPostActivities201() {
+        CreateActivity createActivity = new CreateActivity();
+
+        Athlete athlete = new Athlete();
+        athlete.setUsername("tom");
+        post("/athletes", athlete, 201);
+        athlete = Athlete.findByUsername("tom");
+
+        Location location = new Location();
+        location.setName("Alighieri Boxing Club");
+        location.setLatitude(52.2297700);
+        location.setLongitude(21.01178);
+        post("/locations", location, 201);
+        location = Location.findByName("Alighieri Boxing Club");
+
+        createActivity.setName("Boxing Training");
+        createActivity.setOwnerId(athlete.getId());
+        createActivity.setLocationId(location.getId());
+        createActivity.setDiscipline(Discipline.BOXING);
+        createActivity.setCapacity(20);
+
+
+        post("/activities", createActivity, 201);
     }
 
     @Test
