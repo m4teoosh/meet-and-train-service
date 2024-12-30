@@ -10,6 +10,7 @@ import pl.sportovo.domain.athlete.Athlete;
 import pl.sportovo.domain.discipline.Discipline;
 import pl.sportovo.domain.location.Location;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +28,10 @@ public class Activity extends PanacheEntityBase {
     String name;
 
     @NotNull
+    @ManyToOne
+    private Athlete owner;
+
+    @NotNull
     private Discipline discipline;
 
     @Range(min = 2, max = 20)
@@ -37,12 +42,17 @@ public class Activity extends PanacheEntityBase {
     private Location location;
 
     @NotNull
-    @ManyToOne
-    private Athlete owner;
+    private LocalDateTime startDateTime;
+
+    @NotNull
+    private LocalDateTime endDateTime;
 
     @OneToMany
     private List<Athlete> participants;
 
     @NotNull
     private Boolean isPublic = true;
+
+    @NotNull
+    private Boolean isRecurring = false;
 }

@@ -7,21 +7,21 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.*;
-import pl.sportovo.domain.activity.model.Activity;
 import pl.sportovo.domain.activity.model.CreateActivity;
 import pl.sportovo.domain.athlete.Athlete;
 import pl.sportovo.domain.discipline.Discipline;
 import pl.sportovo.domain.location.Location;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.keyStore;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ResourceTest {
-
 
 
     @BeforeAll
@@ -47,18 +47,17 @@ public class ResourceTest {
         post("/athletes", a1, 201);
 
         post("/athletes", a1, 400)
-        .body(containsString("Athlete with this username already exists!"));
+                .body(containsString("Athlete with this username already exists!"));
     }
 
     @Test
-    public void testPostActivities400() {
+    public void testPostActivities400NullValues() {
         CreateActivity createActivity = new CreateActivity();
         createActivity.setDiscipline(Discipline.BOXING);
         createActivity.setCapacity(33);
 
-
         post("/activities", createActivity, 400)
-        .body("errors.size()", is(4));
+                .body("errors.size()", is(6));
     }
 
     @Test
@@ -82,9 +81,23 @@ public class ResourceTest {
         createActivity.setLocationId(location.getId());
         createActivity.setDiscipline(Discipline.BOXING);
         createActivity.setCapacity(20);
-
+        createActivity.setStartDateTime(LocalDateTime.now().plusDays(1).toString());
+        createActivity.setEndDateTime(LocalDateTime.now().plusDays(1).plusHours(1).toString());
 
         post("/activities", createActivity, 201);
+    }
+
+    @Test
+    public void testPostActivities400NotExistingLocationAndOwner() {
+        CreateActivity createActivity = new CreateActivity();
+        createActivity.setName("Boxing Training");
+        createActivity.setOwnerId(UUID.fromString("550e8400-e29b-41d4-a716-446655440020"));
+        createActivity.setLocationId(UUID.fromString("550e8400-e29b-41d4-a716-446655440000"));
+        createActivity.setDiscipline(Discipline.BOXING);
+        createActivity.setCapacity(20);
+
+        post("/activities", createActivity, 400)
+        .body("errors[0].message", is("activity-location-does-not-exist"));
     }
 
     @Test

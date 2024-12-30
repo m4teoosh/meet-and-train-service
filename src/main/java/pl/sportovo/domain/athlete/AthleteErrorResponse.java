@@ -1,6 +1,6 @@
 package pl.sportovo.domain.athlete;
 
-import pl.sportovo.error.ErrorResponse;
+import pl.sportovo.exception.ErrorResponse;
 
 import java.util.UUID;
 

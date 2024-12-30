@@ -1,4 +1,4 @@
-package pl.sportovo.error;
+package pl.sportovo.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.ws.rs.core.Response;

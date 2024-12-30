@@ -1,4 +1,4 @@
-package pl.sportovo.error;
+package pl.sportovo.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;

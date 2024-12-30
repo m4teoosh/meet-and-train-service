@@ -1,11 +1,10 @@
-package pl.sportovo.error;
+package pl.sportovo.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @EqualsAndHashCode
