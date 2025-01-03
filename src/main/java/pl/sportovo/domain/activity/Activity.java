@@ -1,4 +1,4 @@
-package pl.sportovo.domain.activity.model;
+package pl.sportovo.domain.activity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Range;
 import pl.sportovo.domain.athlete.Athlete;
 import pl.sportovo.domain.discipline.Discipline;
 import pl.sportovo.domain.location.Location;
+import pl.sportovo.geography.GeoCalculator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +22,6 @@ public class Activity extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "ACTIVITY_ID")
     UUID id;
 
     @NotNull
@@ -32,14 +32,14 @@ public class Activity extends PanacheEntityBase {
     private Athlete owner;
 
     @NotNull
+    @ManyToOne
+    private Location location;
+
+    @NotNull
     private Discipline discipline;
 
     @Range(min = 2, max = 20)
     private Integer capacity;
-
-    @NotNull
-    @ManyToOne
-    private Location location;
 
     @NotNull
     private LocalDateTime startDateTime;
@@ -55,4 +55,20 @@ public class Activity extends PanacheEntityBase {
 
     @NotNull
     private Boolean isRecurring = false;
+
+    public static Activity findFirstByName(String name) {
+        return find("name", name).firstResult();
+    }
+
+    public static List<Activity> findByParticipantId(UUID participantId) {
+        return find("SELECT a FROM Activity a JOIN a.participants p WHERE p.id = ?1", participantId).list();
+    }
+
+    public static List<Activity> findNearbyActivities(double latitude, double longitude, int radiusInKilometers) {
+        double latitudeRange = GeoCalculator.covertKilometersToLatitudeDegrees(radiusInKilometers);
+        double longitudeRange = GeoCalculator.covertKilometersToLongitudeDegrees(latitude, radiusInKilometers);
+
+        return find("SELECT a FROM Activity a WHERE a.location.latitude BETWEEN ?1 AND ?2 AND a.location.longitude BETWEEN ?3 AND ?4",
+                latitude - latitudeRange, latitude + latitudeRange, longitude - longitudeRange, longitude + longitudeRange).list();
+    }
 }

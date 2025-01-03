@@ -22,7 +22,6 @@ public class Athlete extends PanacheEntityBase {
     public static boolean usernameExists(String username) {
         return Athlete.find("username", username).count() > 0;
     }
-
     public static Athlete findByUsername(String username) {
         return Athlete.find("username", username).firstResult();
     }

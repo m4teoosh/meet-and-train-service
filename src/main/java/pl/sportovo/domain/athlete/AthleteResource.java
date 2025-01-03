@@ -1,20 +1,25 @@
 package pl.sportovo.domain.athlete;
 
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pl.sportovo.domain.activity.model.Activity;
+import pl.sportovo.domain.activity.ActivityService;
+import pl.sportovo.domain.activity.Activity;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @Path("/athletes")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public class AthleteResource {
 
+    @Inject
+    ActivityService activityService;
 
     @GET
     public List<Activity> list() {
@@ -25,6 +30,13 @@ public class AthleteResource {
     @Path("{id}")
     public Athlete get(@PathParam("id") Long id) {
         return Athlete.findById(id);
+    }
+
+    @GET
+    @Path("{id}/activities")
+    public Response listJoinedActivities(@PathParam("id") UUID id) {
+        List<Activity> activities = Activity.findByParticipantId(id);
+        return Response.ok().entity(activities).build();
     }
 
 //    @GET

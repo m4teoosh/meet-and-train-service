@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pl.sportovo.domain.activity.model.Activity;
+import pl.sportovo.domain.activity.Activity;
 
 
 import java.net.URI;
