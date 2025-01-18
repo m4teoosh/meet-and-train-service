@@ -1,8 +1,8 @@
 package pl.sportovo;
 
 import pl.sportovo.domain.activity.dto.ActivityInput;
-import pl.sportovo.domain.athlete.Athlete;
 import pl.sportovo.domain.athlete.dto.AthleteInput;
+import pl.sportovo.domain.athlete.dto.PublicAthlete;
 import pl.sportovo.domain.discipline.Discipline;
 import pl.sportovo.domain.location.Location;
 
@@ -16,7 +16,7 @@ public class TestResource {
         AthleteInput ownerInput = new AthleteInput();
         ownerInput.setUsername(ownerName);
 
-        Athlete owner = post("/athletes", ownerInput, token).as(Athlete.class);
+        PublicAthlete owner = post("/athletes", ownerInput, token).as(PublicAthlete.class);
 
         Location location = new Location();
         location.setName(locationName);

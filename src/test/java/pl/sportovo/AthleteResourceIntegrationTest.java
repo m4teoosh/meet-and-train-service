@@ -69,7 +69,7 @@ public class AthleteResourceIntegrationTest {
     @Test
     public void testPostAthletes400UsernameExists() {
         Athlete athlete = new Athlete();
-        athlete.setUsername("tom");
+        athlete.setUsername("denis");
 
         post("/athletes", athlete, generateBearerToken())
                 .then()
@@ -78,7 +78,7 @@ public class AthleteResourceIntegrationTest {
         post("/athletes", athlete, generateBearerToken())
                 .then()
                 .statusCode(400)
-                .body("errors[0].message", is("username-exists"));
+                .body("errors[0].message", is("athlete-with-provided-username-already-exists"));
     }
 
 }

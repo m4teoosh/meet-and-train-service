@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import pl.sportovo.domain.activity.dto.ActivityInput;
 import pl.sportovo.domain.activity.dto.NearbyActivity;
+import pl.sportovo.domain.activity.dto.PublicActivity;
 import pl.sportovo.domain.activity.exception.ActivityAlreadyFullException;
 import pl.sportovo.domain.activity.exception.ActivityLocationDoesNotExistException;
 import pl.sportovo.domain.activity.exception.ActivityOwnerDoesNotExistException;
@@ -28,6 +29,11 @@ public class ActivityService {
     @Inject
     ActivityMapper activityMapper;
 
+    public PublicActivity getActivityDetails(UUID id) {
+        Activity activity = Activity.findById(id);
+        return activityMapper.toPublicActivity(activity);
+    }
+
     public Activity createActivity(@Valid ActivityInput activityInput) {
         Location location = locationService.findById(activityInput.getLocationId());
         if (location == null) throw new ActivityLocationDoesNotExistException();
@@ -35,12 +41,12 @@ public class ActivityService {
         Athlete athlete = athleteService.findById(activityInput.getOwnerId());
         if (athlete == null) throw new ActivityOwnerDoesNotExistException();
 
-        Activity activity = activityMapper.fromRequest(activityInput);
+        Activity activity = activityMapper.fromActivityInput(activityInput);
         activity.persist();
         return activity;
     }
 
-    public Activity joinActivity(UUID activityId, UUID athleteId) {
+    public PublicActivity joinActivity(UUID activityId, UUID athleteId) {
         Activity activity = Activity.findById(activityId);
         Athlete athlete = Athlete.findById(athleteId);
 
@@ -53,20 +59,20 @@ public class ActivityService {
             }
             activity.getParticipants().add(athlete);
             activity.persist();
-            return activity;
+            return activityMapper.toPublicActivity(activity);
         } else {
             return null;
         }
     }
 
-    public Activity leaveActivity(UUID activityId, UUID athleteId) {
+    public PublicActivity leaveActivity(UUID activityId, UUID athleteId) {
         Activity activity = Activity.findById(activityId);
         Athlete athlete = Athlete.findById(athleteId);
 
         if (activity != null && athlete != null) {
             activity.getParticipants().remove(athlete);
             activity.persist();
-            return activity;
+            return activityMapper.toPublicActivity(activity);
         } else {
             return null;
         }
@@ -86,4 +92,8 @@ public class ActivityService {
         return Activity.findByParticipantId(id);
     }
 
+    public PublicActivity findActivityById(UUID id) {
+        Activity activity = Activity.findById(id);
+        return activityMapper.toPublicActivity(activity);
+    }
 }

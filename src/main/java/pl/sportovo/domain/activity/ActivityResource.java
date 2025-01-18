@@ -13,6 +13,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import pl.sportovo.domain.activity.dto.ActivityInput;
+import pl.sportovo.domain.activity.dto.PublicActivity;
 import pl.sportovo.domain.athlete.AthleteService;
 
 import java.net.URI;
@@ -51,8 +52,12 @@ public class ActivityResource {
             @APIResponse(responseCode = "200", description = "Activity found"),
             @APIResponse(responseCode = "404", description = "Activity not found")
     })
-    public Activity get(@PathParam("id") Long id) {
-        return Activity.findById(id);
+    public Response get(@PathParam("id") UUID id) {
+        PublicActivity activity = activityService.getActivityDetails(id);
+        if (activity == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok().entity(activity).build();
     }
 
     @POST

@@ -42,9 +42,8 @@ public class Athlete extends PanacheEntityBase {
         return Athlete.find("username", username).firstResult();
     }
     public static Athlete findBySubjectId(String oidcId) {
-        return Athlete.find("identityId", oidcId).firstResult();
+        return Athlete.find("subjectId", oidcId).firstResult();
     }
-
     public static boolean isLoggedInUserAthlete(UUID id, String oidcId) {
         return Athlete.find("id = ?1 and subjectId = ?2", id, oidcId).count() > 0;
     }

@@ -39,8 +39,11 @@ public class TestUtils {
                 .statusCode(status);
     }
 
-    public static ValidatableResponse delete(String path, int status) {
+    public static ValidatableResponse delete(String path,  String bearerToken, int status) {
         return given()
+                .headers(
+                        "Authorization",
+                        "Bearer " + bearerToken)
                 .when()
                 .contentType(ContentType.JSON)
                 .delete(path)

@@ -18,7 +18,6 @@ public class AthleteService {
     public Athlete findById(UUID id) {
         return Athlete.findById(id);
     }
-
     public boolean isLoggedInUserAthlete(UUID id, String oidcId) {
         return Athlete.isLoggedInUserAthlete(id, oidcId);
     }
@@ -34,17 +33,18 @@ public class AthleteService {
             throw new AthleteWithProvidedUsernameAlreadyExistsException();
         }
 
-        Athlete athlete = new Athlete();
-        athlete.setSubjectId(subjectId);
-        athlete.setUsername(athleteInput.getUsername());
-        athlete.setBio(athleteInput.getBio());
+        Athlete athlete = athleteMapper.fromAthleteInput(athleteInput, subjectId);
         athlete.persist();
 
         return athleteMapper.toPublicAthlete(athlete);
     }
 
-    public PublicAthlete getPublicAthleteByUsername(String username) {
+    public PublicAthlete findPublicAthleteByUsername(String username) {
         Athlete athlete = Athlete.findByUsername(username);
         return athleteMapper.toPublicAthlete(athlete);
+    }
+
+    public Athlete findAthleteByUsername(String username) {
+        return  Athlete.findByUsername(username);
     }
 }

@@ -27,13 +27,13 @@ public class SecurityIntegrationTest {
     @Test
     public void tryReadOwnerOnlyResourceAsUnauthorized() {
         // given
-        Athlete tom = new Athlete();
-        tom.setUsername("tom");
-        tom = post("/athletes", tom, TestUtils.generateBearerToken()).as(Athlete.class);
+        Athlete fred = new Athlete();
+        fred.setUsername("fred");
+        fred = post("/athletes", fred, TestUtils.generateBearerToken()).as(Athlete.class);
 
         // when
         URI uri = UriBuilder.fromPath("/athletes/{id}/activities")
-                .resolveTemplate("id", tom.getId())
+                .resolveTemplate("id", fred.getId())
                 .build();
 
         // then
@@ -44,13 +44,13 @@ public class SecurityIntegrationTest {
     public void tryReadOwnerOnlyResourceAsOwner() {
         // given
         String token = TestUtils.generateBearerToken();
-        Athlete tom = new Athlete();
-        tom.setUsername("tom");
-        tom = post("/athletes", tom, token).as(Athlete.class);
+        Athlete ben = new Athlete();
+        ben.setUsername("ben");
+        ben = post("/athletes", ben, token).as(Athlete.class);
 
         // when
         URI uri = UriBuilder.fromPath("/athletes/{id}/activities")
-                .resolveTemplate("id", tom.getId())
+                .resolveTemplate("id", ben.getId())
                 .build();
 
         // then

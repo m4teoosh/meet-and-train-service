@@ -43,7 +43,7 @@ public class AthleteResource {
             @APIResponse(responseCode = "404", description = "Athlete not found")
     })
     public PublicAthlete getPublicAthleteProfile(@PathParam("username") String username) {
-        return athleteService.getPublicAthleteByUsername(username);
+        return athleteService.findPublicAthleteByUsername(username);
     }
 
     @GET
@@ -65,7 +65,7 @@ public class AthleteResource {
     @APIResponses(value = {
             @APIResponse(responseCode = "201", description = "Athlete created"),
             @APIResponse(responseCode = "400", description = "Invalid input"),
-            @APIResponse(responseCode = "409", description = "Athlete with provided identity or username already exists")
+            @APIResponse(responseCode = "400", description = "Athlete with provided identity or username already exists")
     })
     public Response register(@Valid AthleteInput athleteInput) {
         String subjectId = identity.getPrincipal().getName();
