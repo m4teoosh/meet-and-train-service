@@ -1,5 +1,6 @@
 package pl.sportovo.domain.location;
 
+import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -7,19 +8,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.sportovo.domain.activity.Activity;
 
-
 import java.net.URI;
-import java.util.List;
 
 @Path("/locations")
+@Authenticated
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public class LocationResource {
-
-    @GET
-    public List<Activity> list(){
-        return Location.listAll();
-    }
 
     @GET
     @Path("{id}")

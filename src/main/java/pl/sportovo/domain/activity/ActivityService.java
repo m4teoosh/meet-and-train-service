@@ -3,7 +3,7 @@ package pl.sportovo.domain.activity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import pl.sportovo.domain.activity.dto.ActivityRequest;
+import pl.sportovo.domain.activity.dto.ActivityInput;
 import pl.sportovo.domain.activity.dto.NearbyActivity;
 import pl.sportovo.domain.activity.exception.ActivityAlreadyFullException;
 import pl.sportovo.domain.activity.exception.ActivityLocationDoesNotExistException;
@@ -28,20 +28,16 @@ public class ActivityService {
     @Inject
     ActivityMapper activityMapper;
 
-    public Activity createActivity(@Valid ActivityRequest activityRequest) {
-        Location location = locationService.findById(activityRequest.getLocationId());
+    public Activity createActivity(@Valid ActivityInput activityInput) {
+        Location location = locationService.findById(activityInput.getLocationId());
         if (location == null) throw new ActivityLocationDoesNotExistException();
 
-        Athlete athlete = athleteService.findById(activityRequest.getOwnerId());
+        Athlete athlete = athleteService.findById(activityInput.getOwnerId());
         if (athlete == null) throw new ActivityOwnerDoesNotExistException();
 
-        Activity activity = activityMapper.fromRequest(activityRequest);
+        Activity activity = activityMapper.fromRequest(activityInput);
         activity.persist();
-
-        if (activity.isPersistent())
-            return activity;
-        else
-            return null;
+        return activity;
     }
 
     public Activity joinActivity(UUID activityId, UUID athleteId) {
@@ -84,6 +80,10 @@ public class ActivityService {
                     return new NearbyActivity(activity.getId(), activity.getDiscipline(), activity.getName(), distance);
                 })
                 .toList();
+    }
+
+    public List<Activity> listActivitiesByParticipant(UUID id) {
+        return Activity.findByParticipantId(id);
     }
 
 }

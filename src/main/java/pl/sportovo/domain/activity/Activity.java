@@ -22,10 +22,10 @@ public class Activity extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    UUID id;
+    private UUID id;
 
     @NotNull
-    String name;
+    private String name;
 
     @NotNull
     @ManyToOne
